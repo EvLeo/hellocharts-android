@@ -1,7 +1,9 @@
 package lecho.lib.hellocharts.samples;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,12 +16,15 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
+import lecho.lib.hellocharts.gesture.ContainerScrollType;
 import lecho.lib.hellocharts.gesture.ZoomType;
 import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
+import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Column;
 import lecho.lib.hellocharts.model.ColumnChartData;
 import lecho.lib.hellocharts.model.SubcolumnValue;
+import lecho.lib.hellocharts.model.Viewport;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.Chart;
 import lecho.lib.hellocharts.view.ColumnChartView;
@@ -63,7 +68,7 @@ public class ColumnChartActivity extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_column_chart, container, false);
 
             chart = (ColumnChartView) rootView.findViewById(R.id.chart);
-            chart.setOnValueTouchListener(new ValueTouchListener());
+//            chart.setOnValueTouchListener(new ValueTouchListener());
 
             generateData();
 
@@ -160,8 +165,10 @@ public class ColumnChartActivity extends ActionBarActivity {
         }
 
         private void generateDefaultData() {
+            setupChartView();
+
             int numSubcolumns = 1;
-            int numColumns = 8;
+            int numColumns = 18;
             // Column can have many subcolumns, here by default I use 1 subcolumn in each of 8 columns.
             List<Column> columns = new ArrayList<Column>();
             List<SubcolumnValue> values;
@@ -169,34 +176,88 @@ public class ColumnChartActivity extends ActionBarActivity {
 
                 values = new ArrayList<SubcolumnValue>();
                 for (int j = 0; j < numSubcolumns; ++j) {
-                    values.add(new SubcolumnValue((float) Math.random() * 50f + 5, ChartUtils.pickColor()));
+                    values.add(new SubcolumnValue((float) Math.random() * 100f, Color.parseColor("#39B6ED")));
                 }
 
                 Column column = new Column(values);
-                column.setHasLabels(hasLabels);
-                column.setHasLabelsOnlyForSelected(hasLabelForSelected);
+                column.setHasLabels(false);
+                column.setHasLabelsOnlyForSelected(true);
                 columns.add(column);
             }
 
             data = new ColumnChartData(columns);
+            data.setFillRatio(0.32f);
 
-            if (hasAxes) {
-                Axis axisX = new Axis();
-                Axis axisY = new Axis().setHasLines(true);
-                if (hasAxesNames) {
-                    axisX.setName("Axis X");
-                    axisY.setName("Axis Y");
-                }
-                data.setAxisXBottom(axisX);
-                data.setAxisYLeft(axisY);
-            } else {
-                data.setAxisXBottom(null);
-                data.setAxisYLeft(null);
-            }
+            Axis axisX = new Axis();
+            List<AxisValue> xvs = new ArrayList<>();
+            xvs.add(new AxisValue(0).setLabel("12.1"));
+            xvs.add(new AxisValue(1).setLabel("12.1"));
+            xvs.add(new AxisValue(2).setLabel("12.2"));
+            xvs.add(new AxisValue(3).setLabel("12.11"));
+            xvs.add(new AxisValue(4).setLabel("12.21"));
+            xvs.add(new AxisValue(5).setLabel("12.22"));
+            xvs.add(new AxisValue(6).setLabel("12.22"));
+            xvs.add(new AxisValue(7).setLabel("12.22"));
+            xvs.add(new AxisValue(8).setLabel("12.22"));
+            xvs.add(new AxisValue(9).setLabel("12.22"));
+            xvs.add(new AxisValue(10).setLabel("12.22"));
+            xvs.add(new AxisValue(11).setLabel("12.22"));
+            xvs.add(new AxisValue(12).setLabel("12.22"));
+            xvs.add(new AxisValue(13).setLabel("12.22"));
+            xvs.add(new AxisValue(14).setLabel("12.22"));
+            xvs.add(new AxisValue(15).setLabel("12.22"));
+            xvs.add(new AxisValue(16).setLabel("12.22"));
+            xvs.add(new AxisValue(17).setLabel("12.17"));
+            axisX.setValues(xvs);
+            axisX.setTextColor(ContextCompat.getColor(getActivity(), R.color.color4d4d4d));
+            axisX.setTextSize(12);
+            axisX.setLineColor(ContextCompat.getColor(getActivity(), R.color.colore6e6e6));
+            axisX.setMaxLabelChars(4);
+            Axis axisY = new Axis().setHasLines(true);
+            List<AxisValue> yvs = new ArrayList<>();
+            yvs.add(new AxisValue(0).setLabel("0%"));
+            yvs.add(new AxisValue(25).setLabel("25%"));
+            yvs.add(new AxisValue(50).setLabel("50%"));
+            yvs.add(new AxisValue(75).setLabel("75%"));
+            yvs.add(new AxisValue(100).setLabel("100%"));
+            axisY.setValues(yvs);
+            axisY.setInside(true);//设置y轴在图表内
+            axisY.setMaxLabelChars(5);//设置轴线标签5个字符长度
+            axisY.setTextColor(ContextCompat.getColor(getActivity(), R.color.b4b4b4));//设置y轴标签颜色
+            axisY.setTextSize(9);//9sp
+            axisY.setLineColor(ContextCompat.getColor(getActivity(), R.color.colore6e6e6));
+//            axisY.setHasSeparationLine(true);
+//            axisX.setHasSeparationLine(false);
+            axisX.setSeparationLineUseLineColor(true);
+//            axisX.setHasLines(true);
+//            axisY.setHasLines(false);
+            data.setAxisXBottom(axisX);
+            data.setAxisYLeft(axisY);
+
+            Viewport maxViewport = chart.getMaximumViewport();
+            maxViewport.right = 18;
+            chart.setMaximumViewport(maxViewport);
 
             chart.setColumnChartData(data);
 
         }
+
+        private void setupChartView() {
+            chart.setViewportCalculationEnabled(false);
+            chart.setValueSelectionEnabled(false);
+            chart.setZoomEnabled(false);
+            chart.setValueSelectionEnabled(true);
+            chart.setContainerScrollEnabled(true, ContainerScrollType.HORIZONTAL);
+            //横轴显示8个
+            final Viewport viewport = new Viewport(chart.getMaximumViewport());
+            viewport.bottom = 1;
+            viewport.top = 105;
+            viewport.left = -1;
+            viewport.right = 7;
+            chart.setMaximumViewport(viewport);
+            chart.setCurrentViewport(viewport);
+        }
+
 
         /**
          * Generates columns with subcolumns, columns have larger separation than subcolumns.

@@ -550,7 +550,13 @@ public class AxesRenderer {
         }
         // Draw separation line with the same color as axis labels and name.
         if (axis.hasSeparationLine()) {
-            canvas.drawLine(separationX1, separationY1, separationX2, separationY2, labelPaintTab[position]);
+            if (axis.separationLineUseLineColor()) {
+                //使用lineColor作为X轴的颜色
+                canvas.drawLine(separationX1, separationY1, separationX2, separationY2, linePaintTab[position]);
+            } else {
+                //使用labelColor作为X轴的颜色
+                canvas.drawLine(separationX1, separationY1, separationX2, separationY2, labelPaintTab[position]);
+            }
         }
 
         if (axis.hasLines()) {

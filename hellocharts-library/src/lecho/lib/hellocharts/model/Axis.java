@@ -75,6 +75,8 @@ public class Axis {
 
     private boolean hasTiltedLabels = false;
 
+    private boolean separationLineUseLineColor = false;
+
     /**
      * Creates auto-generated axis without name and with default formatter.
      */
@@ -300,6 +302,16 @@ public class Axis {
     public Axis setHasTiltedLabels(boolean hasTiltedLabels) {
         this.hasTiltedLabels = hasTiltedLabels;
         return this;
+    }
+
+    //设置X轴的颜色是否使用lineColor,默认使用的是labelColor
+    public Axis setSeparationLineUseLineColor(boolean useLineColor) {
+        this.separationLineUseLineColor = useLineColor;
+        return this;
+    }
+
+    public boolean separationLineUseLineColor() {
+        return separationLineUseLineColor;
     }
 
 }
